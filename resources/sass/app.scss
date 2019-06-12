@@ -5,15 +5,21 @@
 @import 'variables';
 
 // Bootstrap
-//@import '~bootstrap/scss/bootstrap';
+@import '~bootstrap/scss/bootstrap';
 
 body {
-    font: 14px "Century Gothic", Futura, sans-serif;
+    font: 18px "Century Gothic", Futura, sans-serif;
     margin: 20px;
 }
 
 ol, ul {
     padding-left: 30px;
+}
+
+a{
+    color: -webkit-link;
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 .board-row:after {
@@ -24,23 +30,29 @@ ol, ul {
 
 .status {
     margin-bottom: 10px;
+    text-align: center;
 }
 
 .square {
     background: #fff;
     border: 1px solid #999;
     float: left;
-    font-size: 24px;
+    font-size: 84px;
     font-weight: bold;
-    line-height: 34px;
-    height: 34px;
+    line-height: 94px;
+    height: 94px;
     margin-right: -1px;
     margin-top: -1px;
     padding: 0;
     text-align: center;
-    width: 34px;
+    width: 94px;
+    cursor: pointer;
 
-    :focus {
+    &[isDisabled] {
+        cursor: unset;
+    }
+
+    &:focus {
         outline:none;
     }
 }
@@ -52,29 +64,31 @@ ol, ul {
 .game {
     display: flex;
     flex-direction: row;
-    margin: auto;
+    margin: 25px auto;
+    width: 280px;
 }
 
 .game-info {
-    margin-left: 20px;
+    width: 280px;
+    margin: 20px auto;
+    text-align: center;
 }
 .scoreboard {
     display: table;
     margin: auto;
 }
-
-.score,
-.team,
-.letter {
+.score {
     display: table-row;
+    font-size: 56px;
 
     span {
         display: table-cell;
 
         &:first-child {
             text-align: right;
-            padding-right: 10px;
+            padding-right: 26px;
             position: relative;
+            width: 50%;
 
             /*the line between scores*/
             &::before {
@@ -87,7 +101,37 @@ ol, ul {
 
         &:last-child {
             text-align: left;
-            padding-left: 10px;
+            padding-left: 13px;
+        }
+    }
+}
+
+.letter,
+.team {
+    display: table-row;
+    font-size: 36px;
+
+    span {
+        display: table-cell;
+
+        &:first-child {
+            text-align: right;
+            padding-right: 26px;
+            position: relative;
+            width: 50%;
+
+            /*the line between scores*/
+            &::before {
+                content: "-";
+                position: absolute;
+                right: -2px;
+                top: 0;
+            }
+        }
+
+        &:last-child {
+            text-align: left;
+            padding-left: 17px;
         }
     }
 }
@@ -121,7 +165,7 @@ ol, ul {
     }
 }
 
-/* The Close Button */
+/* The Modal Close Button */
 .close {
     color: #aaaaaa;
     float: right;
@@ -143,4 +187,8 @@ table{
     th {
         text-align: left;
     }
+}
+
+.flR {
+    float: right;
 }

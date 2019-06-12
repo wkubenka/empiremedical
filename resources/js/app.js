@@ -41,8 +41,18 @@ let app = new Vue({
         winner: null
     },
     computed: {
-        nextPlayer: function() {
-            return this.player1IsNext ? "X" : "O";
+        changeOpponentName: function() {
+            return this.player2IsComputer ? "another person" : "the Computer";
+        },
+        status: function() {
+            let status;
+            if (this.winner === null) {
+                const letter = this.player1IsNext ? "X" : "O";
+                status = "Next Player: " + letter;
+            } else {
+                status = this.winner + " won the game!";
+            }
+            return status;
         },
         player2Name: function() {
             return this.player2IsComputer ? "Computer" : "Player 2";
@@ -84,11 +94,7 @@ let app = new Vue({
                         //console.log(response);
                     })
                     .catch(function(error) {
-                        if (error.response.status === 401) {
-                            alert("Sign in to get on our leaderboard");
-                        } else {
-                            console.log(error);
-                        }
+                        console.log(error);
                     });
             }
         },
@@ -114,6 +120,12 @@ let app = new Vue({
             this.winner = null;
             if (!this.player1IsNext && this.player2IsComputer)
                 this.computerMove();
+        },
+        toggleComputer: function() {
+            this.player2IsComputer = !this.player2IsComputer;
+            this.reset();
+            this.player1Wins = 0;
+            this.player2Wins = 0;
         }
     }
 });
@@ -139,8 +151,8 @@ let leaderboard = new Vue({
         }
     },
     filters: {
-        percentage : function (value) {
-            return parseFloat(value).toFixed(2)+"%"
+        percentage: function(value) {
+            return parseFloat(value).toFixed(2) + "%";
         }
     }
 });
