@@ -36,4 +36,11 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected $appends = ['win_percent'];
+
+    public function getWinPercentAttribute() {
+
+        return $this->wins / $this->games;
+    }
 }

@@ -4,9 +4,9 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('./bootstrap');
+require("./bootstrap");
 
-window.Vue = require('vue');
+window.Vue = require("vue");
 
 /**
  * The following block of code may be used to automatically register your
@@ -19,7 +19,10 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+Vue.component(
+    "example-component",
+    require("./components/ExampleComponent.vue").default
+);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -27,6 +30,117 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-const app = new Vue({
-    el: '#app',
+let app = new Vue({
+    el: "#app",
+    data: {
+        player1Wins: 0,
+        player2Wins: 0,
+        player1IsNext: true,
+        player2IsComputer: true,
+        boardData: Array(9).fill(null),
+        winner: null
+    },
+    computed: {
+        nextPlayer: function() {
+            return this.player1IsNext ? "X" : "O";
+        },
+        player2Name: function() {
+            return this.player2IsComputer ? "Computer" : "Player 2";
+        }
+    },
+    methods: {
+        calculateWinner: function() {
+            const lines = [
+                [0, 1, 2],
+                [3, 4, 5],
+                [6, 7, 8],
+                [0, 3, 6],
+                [1, 4, 7],
+                [2, 5, 8],
+                [0, 4, 8],
+                [2, 4, 6]
+            ];
+            for (let i = 0; i < lines.length; i++) {
+                const [a, b, c] = lines[i];
+                if (
+                    this.boardData[a] &&
+                    this.boardData[a] === this.boardData[b] &&
+                    this.boardData[a] === this.boardData[c]
+                ) {
+                    this.winner = this.boardData[a];
+                    if (this.boardData[a] === "X") this.player1Wins++;
+                    else this.player2Wins++;
+                }
+            }
+            if (this.winner === null && !this.boardData.includes(null)) {
+                this.winner = "Cat";
+            }
+            if (this.winner !== null) {
+                axios
+                    .post("/game/complete", {
+                        won: this.winner === "X"
+                    })
+                    .then(function(response) {
+                        //console.log(response);
+                    })
+                    .catch(function(error) {
+                        if (error.response.status === 401) {
+                            alert("Sign in to get on our leaderboard");
+                        } else {
+                            console.log(error);
+                        }
+                    });
+            }
+        },
+        clickSquare: function(i) {
+            if (this.boardData[i] !== null || this.winner !== null) return;
+            this.$set(this.boardData, i, this.player1IsNext ? "X" : "O");
+            this.player1IsNext = !this.player1IsNext;
+            this.calculateWinner();
+            if (!this.player1IsNext && this.player2IsComputer)
+                this.computerMove();
+        },
+        computerMove: function() {
+            if (this.winner !== null) return;
+            let i = Math.floor(Math.random() * 9);
+            while (this.boardData[i] !== null) {
+                i = Math.floor(Math.random() * 9);
+            }
+            this.clickSquare(i);
+        },
+        reset: function() {
+            this.player1IsNext = Math.random() > 0.5;
+            this.boardData = Array(9).fill(null);
+            this.winner = null;
+            if (!this.player1IsNext && this.player2IsComputer)
+                this.computerMove();
+        }
+    }
+});
+
+let leaderboard = new Vue({
+    el: "#leaderboard",
+    data: { open: false, leaders: [] },
+    methods: {
+        toggleLeaderboard: function() {
+            this.open = !this.open;
+            if (this.open) {
+                axios
+                    .get("/leaders")
+                    .then(response => {
+                        console.log(response);
+
+                        this.leaders = response.data.data;
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            }
+        }
+    },
+    filters: {
+        percentage : function (value) {
+            return parseFloat(value).toFixed(2)+"%"
+        }
+    }
 });
