@@ -6,8 +6,8 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Tic-Tac-Toe</title>
-    <!-- Styles -->
 
+    <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
     <!-- Fonts -->
@@ -36,6 +36,6 @@
         </div>
     @endif
 
-        @yield('content')
+    @yield('content')
 </body>
 </html>

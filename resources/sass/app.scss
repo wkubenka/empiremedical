@@ -12,14 +12,12 @@ body {
     margin: 20px;
 }
 
-ol, ul {
-    padding-left: 30px;
+a {
+    cursor: pointer;
 }
 
-a{
-    color: -webkit-link;
-    cursor: pointer;
-    text-decoration: underline;
+[v-cloak] {
+    display: none;
 }
 
 .board-row:after {
@@ -150,6 +148,7 @@ a{
     overflow: auto; /* Enable scroll if needed */
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    display: block;
 }
 
 /* Modal Content */
